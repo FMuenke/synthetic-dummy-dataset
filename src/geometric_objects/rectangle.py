@@ -43,9 +43,10 @@ class Rectangle(GeometricShape):
         draw_i.rectangle(box, fill=self.color)
         del draw_i
 
-        draw_l = ImageDraw.Draw(lab)
-        draw_l.rectangle(box, fill=self.label_id)
-        del draw_l
         frame.image = np.array(img)
-        frame.label = np.array(lab)
+        if self.label_id is not None:
+            draw_l = ImageDraw.Draw(lab)
+            draw_l.rectangle(box, fill=self.label_id)
+            del draw_l
+            frame.label = np.array(lab)
         return frame

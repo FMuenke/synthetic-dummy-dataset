@@ -40,5 +40,6 @@ class Ellipse(GeometricShape):
                          shape=[frame.h, frame.w])
 
         frame.image[rr, cc, :] = self.color
-        frame.label[rr, cc, :] = self.label_id
+        if self.label_id is not None:
+            frame.label[rr, cc, :] = self.label_id
         return frame

@@ -18,10 +18,26 @@ def main(args_):
                     "position_opt": "random",
                     "size_opt": "random"
                 },
-                "rectangle": {
-                    "label": (0, 0, 200),
+                "rectangle_0": {
+                    "label": None,
                     "color": (200, 200, 200),
                     "size": 0.3,
+                    "shape_opt": "random",
+                    "position_opt": "random",
+                    "size_opt": "random"
+                },
+                "rectangle_1": {
+                    "label": None,
+                    "color": (200, 200, 200),
+                    "size": 0.1,
+                    "shape_opt": "random",
+                    "position_opt": "random",
+                    "size_opt": "random"
+                },
+                "rectangle_2": {
+                    "label": None,
+                    "color": (200, 200, 200),
+                    "size": 0.1,
                     "shape_opt": "random",
                     "position_opt": "random",
                     "size_opt": "random"
