@@ -41,6 +41,6 @@ class DataSet:
             frame_id = "frame_{}".format(i)
             frame = Frame(self.options)
             frame = o_set.draw(frame)
-            frame.write(os.path.join(i_dir, frame_id + ".jpg"),
+            frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
         print("DataSet was successfully created at {}".format(data_directory))

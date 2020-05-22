@@ -34,8 +34,8 @@ class Ellipse(GeometricShape):
 
         rr, cc = ellipse(r=self.param[0] * frame.w,
                          c=self.param[1] * frame.h,
-                         r_radius=self.param[2] * frame.w,
-                         c_radius=self.param[3] * frame.h,
+                         r_radius=self.param[2] * frame.w / 2,
+                         c_radius=self.param[3] * frame.h / 2,
                          rotation=self.param[4],
                          shape=[frame.h, frame.w])
 

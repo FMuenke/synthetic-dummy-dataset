@@ -1,3 +1,4 @@
 pillow
 tqdm
 numpy
+scikit-image

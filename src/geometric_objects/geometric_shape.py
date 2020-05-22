@@ -16,7 +16,7 @@ class GeometricShape(object):
     def new_position(self):
         opt = self.cfg["position_opt"]
         if opt == "random":
-            self.position = [np.random.randint(100) / 100, np.random.randint(100) / 100]
+            self.position = [np.random.randint(25, 75) / 100, np.random.randint(25, 75) / 100]
         elif opt == "static":
             pass
         else:

@@ -5,43 +5,19 @@ from src.data_set import DataSet
 def main(args_):
 
     cfg = {
-        "n_images": 100,
+        "n_images": 300,
         "image_width": 400,
         "image_height": 400,
         "object_config":
             {
                 "ellipse": {
-                    "label": (200, 0, 0),
+                    "label": (255, 0, 0),
                     "color": (0, 200, 0),
                     "size": 0.3,
                     "shape_opt": "random",
                     "position_opt": "random",
                     "size_opt": "random"
                 },
-                "rectangle_0": {
-                    "label": None,
-                    "color": (200, 200, 200),
-                    "size": 0.3,
-                    "shape_opt": "random",
-                    "position_opt": "random",
-                    "size_opt": "random"
-                },
-                "rectangle_1": {
-                    "label": None,
-                    "color": (200, 200, 200),
-                    "size": 0.1,
-                    "shape_opt": "random",
-                    "position_opt": "random",
-                    "size_opt": "random"
-                },
-                "rectangle_2": {
-                    "label": None,
-                    "color": (200, 200, 200),
-                    "size": 0.1,
-                    "shape_opt": "random",
-                    "position_opt": "random",
-                    "size_opt": "random"
-                }
             }
     }
 
