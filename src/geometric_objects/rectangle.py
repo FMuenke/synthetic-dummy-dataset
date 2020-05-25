@@ -33,20 +33,16 @@ class Rectangle(GeometricShape):
     def draw(self, frame):
         self.new_position()
         self.new_shape()
-        img = Image.fromarray(frame.image.astype(np.uint8))
-        lab = Image.fromarray(frame.label.astype(np.uint8))
-        box = [
-            (self.box[0] * frame.w, self.box[1] * frame.h),
-            (self.box[2] * frame.w, self.box[3] * frame.h)
-        ]
-        draw_i = ImageDraw.Draw(img)
-        draw_i.rectangle(box, fill=self.color)
-        del draw_i
+        img = np.copy(frame.image.astype(np.uint8))
+        lab = np.copy(frame.label.astype(np.uint8))
+
+        img[int(self.box[1] * frame.h):int(self.box[3] * frame.h),
+            int(self.box[0] * frame.w):int(self.box[2] * frame.w),
+            :] = self.color
 
         frame.image = np.array(img)
         if self.label_id is not None:
-            draw_l = ImageDraw.Draw(lab)
-            draw_l.rectangle(box, fill=self.label_id)
-            del draw_l
-            frame.label = np.array(lab)
+            lab[int(self.box[1] * frame.h):int(self.box[3] * frame.h),
+                int(self.box[0] * frame.w):int(self.box[2] * frame.w),
+                :] = self.label_id
         return frame
