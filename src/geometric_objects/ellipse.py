@@ -9,7 +9,7 @@ class Ellipse(GeometricShape):
         super(Ellipse, self).__init__(cfg)
         self.color = cfg["color"]
         self.label_id = cfg["label"]
-        self.shape_factor = 0.2
+        self.shape_option = 0.2
         self.param = [None, None, None, None, None]
 
     def new_shape(self):
@@ -18,9 +18,15 @@ class Ellipse(GeometricShape):
         semi_x, semi_y = self.size, self.size
         rot = 0
         if opt == "random":
-            semi_x += np.random.randint(int(self.shape_factor * 100)) / 100 - 0.5 * self.shape_factor
-            semi_y += np.random.randint(int(self.shape_factor * 100)) / 100 - 0.5 * self.shape_factor
+            semi_x += np.random.randint(int(self.shape_option * 100)) / 100 - 0.5 * self.shape_option
+            semi_y += np.random.randint(int(self.shape_option * 100)) / 100 - 0.5 * self.shape_option
             rot += np.random.randint(100) / 100 * 2 * np.pi - np.pi
+            if np.random.randint(1):
+                semi_x = semi_x / 2
+            else:
+                semi_y = semi_y / 2
+            semi_x = np.clip(semi_x, 0.05, 0.95)
+            semi_y = np.clip(semi_y, 0.05, 0.95)
         elif opt == "static":
             pass
         else:
@@ -31,7 +37,7 @@ class Ellipse(GeometricShape):
     def draw(self, frame):
         self.new_position()
         self.new_shape()
-
+        self.new_size()
         rr, cc = ellipse(r=self.param[0] * frame.w,
                          c=self.param[1] * frame.h,
                          r_radius=self.param[2] * frame.w / 2,

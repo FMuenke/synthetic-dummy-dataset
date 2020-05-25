@@ -25,7 +25,7 @@ class GeometricShape(object):
     def new_size(self):
         opt = self.cfg["size_opt"]
         if opt == "random":
-            self.size = np.random.randint(100) / 100
+            self.size = np.random.randint(1, 100) / 100
         elif opt == "static":
             pass
         else:
