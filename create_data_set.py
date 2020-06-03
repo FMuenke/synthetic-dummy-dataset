@@ -14,9 +14,9 @@ def main(args_):
                     "label": (255, 0, 0),
                     "color": (0, 200, 0),
                     "size": [0.2, 0.65],
-                    "shape_opt": "random",
-                    "position_opt": "random",
-                    "size_opt": "random"
+                    "eccentricity": [0, 1],
+                    "position": [0.25, 0.75],
+                    "orientation": "random"
                 },
             }
     }

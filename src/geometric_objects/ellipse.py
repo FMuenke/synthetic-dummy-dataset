@@ -1,4 +1,3 @@
-from PIL import ImageDraw, Image
 import numpy as np
 from src.geometric_objects.geometric_shape import GeometricShape
 from skimage.draw import ellipse
@@ -9,40 +8,37 @@ class Ellipse(GeometricShape):
         super(Ellipse, self).__init__(cfg)
         self.color = cfg["color"]
         self.label_id = cfg["label"]
-        self.shape_option = 0.2
-        self.param = [None, None, None, None, None]
+        self.eccentricity = None
+        self.eccentricity = self.new_eccentricity()
 
-    def new_shape(self):
-        opt = self.cfg["shape_opt"]
+    def new_eccentricity(self):
+        opt = self.cfg["eccentricity"]
+        eccentricity = self._create_new_parameter(opt, self.eccentricity)
+        return eccentricity
+
+    def get_parameters(self):
         x_c, y_c = self.position
-        semi_x, semi_y = self.size, self.size
-        rot = 0
-        if opt == "random":
-            semi_x += np.random.randint(int(self.shape_option * 100)) / 100 - 0.5 * self.shape_option
-            semi_y += np.random.randint(int(self.shape_option * 100)) / 100 - 0.5 * self.shape_option
-            rot += np.random.randint(100) / 100 * 2 * np.pi - np.pi
-            if np.random.randint(1):
-                semi_x = semi_x / 2
-            else:
-                semi_y = semi_y / 2
-            semi_x = np.clip(semi_x, 0.05, 0.95)
-            semi_y = np.clip(semi_y, 0.05, 0.95)
-        elif opt == "static":
-            pass
+        major = self.size
+        if self.eccentricity == 0:
+            minor = major
+        elif self.eccentricity == 1:
+            minor = 0.0001
         else:
-            raise ValueError("Shape Option: {} not known.".format(opt))
-
-        self.param = [x_c, y_c, semi_x, semi_y, rot]
+            minor = np.sqrt((1 - self.eccentricity**2) * major**2)
+        semi_major = major / 2
+        semi_minor = minor / 2
+        return [x_c, y_c, semi_major, semi_minor, self.orientation]
 
     def draw(self, frame):
-        self.new_position()
-        self.new_shape()
-        self.new_size()
-        rr, cc = ellipse(r=self.param[0] * frame.w,
-                         c=self.param[1] * frame.h,
-                         r_radius=self.param[2] * frame.w / 2,
-                         c_radius=self.param[3] * frame.h / 2,
-                         rotation=self.param[4],
+        self.new()
+        self.eccentricity = self.new_eccentricity()
+
+        param = self.get_parameters()
+        rr, cc = ellipse(r=param[0] * frame.w,
+                         c=param[1] * frame.h,
+                         r_radius=param[2] * frame.w,
+                         c_radius=param[3] * frame.h,
+                         rotation=param[4],
                          shape=[frame.h, frame.w])
 
         frame.image[rr, cc, :] = self.color
