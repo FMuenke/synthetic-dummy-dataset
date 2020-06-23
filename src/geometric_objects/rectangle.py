@@ -9,40 +9,39 @@ class Rectangle(GeometricShape):
         self.label_id = cfg["label"]
 
         super(Rectangle, self).__init__(cfg)
-        self.shape_factor = 0.2
-        self.box = [None, None, None, None]
+        self.aspect_ratio = None
+        self.aspect_ratio = self.new_aspect_ratio()
 
-    def new_shape(self):
-        opt = self.cfg["shape_opt"]
+    def new_aspect_ratio(self):
+        opt = self.cfg["aspect_ratio"]
+        aspect_ratio = self._create_new_parameter(opt, self.aspect_ratio)
+        return aspect_ratio
+
+    def get_parameters(self):
         x_c, y_c = self.position
-        w, h = self.size, self.size
-        if opt == "random":
-            w += np.random.randint(int(self.shape_factor * 100)) / 100 - 0.5 * self.shape_factor
-            h += np.random.randint(int(self.shape_factor * 100)) / 100 - 0.5 * self.shape_factor
-        elif opt == "static":
-            pass
-        else:
-            raise ValueError("Shape Option: {} not known.".format(opt))
-
-        x1 = x_c - 0.5 * w
-        y1 = y_c - 0.5 * h
-        x2 = x_c + 0.5 * w
-        y2 = y_c + 0.5 * h
-        self.box = [x1, y1, x2, y2]
+        height = self.size
+        width = height * self.aspect_ratio
+        x1 = x_c - 0.5 * width
+        y1 = y_c - 0.5 * height
+        x2 = x_c + 0.5 * width
+        y2 = y_c + 0.5 * height
+        return [x1, y1, x2, y2]
 
     def draw(self, frame):
-        self.new_position()
-        self.new_shape()
+        self.new()
+        self.aspect_ratio = self.new_aspect_ratio()
+
+        box = self.get_parameters()
         img = np.copy(frame.image.astype(np.uint8))
         lab = np.copy(frame.label.astype(np.uint8))
 
-        img[int(self.box[1] * frame.h):int(self.box[3] * frame.h),
-            int(self.box[0] * frame.w):int(self.box[2] * frame.w),
+        img[int(box[1] * frame.h):int(box[3] * frame.h),
+            int(box[0] * frame.w):int(box[2] * frame.w),
             :] = self.color
 
         frame.image = np.array(img)
         if self.label_id is not None:
-            lab[int(self.box[1] * frame.h):int(self.box[3] * frame.h),
-                int(self.box[0] * frame.w):int(self.box[2] * frame.w),
+            lab[int(box[1] * frame.h):int(box[3] * frame.h),
+                int(box[0] * frame.w):int(box[2] * frame.w),
                 :] = self.label_id
         return frame
