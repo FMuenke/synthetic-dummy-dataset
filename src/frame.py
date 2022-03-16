@@ -11,10 +11,7 @@ class Frame:
         self.label = np.zeros((self.h, self.w, 3), dtype=np.uint8)
 
     def write(self, frame_image_path, frame_label_path):
-        i = Image.fromarray(self.image)
-        i.save(frame_image_path)
-        l = Image.fromarray(self.label)
-        l.save(frame_label_path)
-
-    def make_background(self):
-        pass
+        img = Image.fromarray(self.image)
+        img.save(frame_image_path)
+        lab = Image.fromarray(self.label)
+        lab.save(frame_label_path)

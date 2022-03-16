@@ -4,17 +4,26 @@ from skimage.draw import ellipse
 
 
 class Ellipse(GeometricShape):
-    def __init__(self, cfg):
-        super(Ellipse, self).__init__(cfg)
-        self.color = cfg["color"]
-        self.label_id = cfg["label"]
-        self.eccentricity = None
-        self.eccentricity = self.new_eccentricity()
-
-    def new_eccentricity(self):
-        opt = self.cfg["eccentricity"]
-        eccentricity = self._create_new_parameter(opt, self.eccentricity)
-        return eccentricity
+    def __init__(self,
+                 label=None,
+                 init_color=(0, 200, 0),
+                 size_option="random",
+                 position_option="random",
+                 orientation_option="random",
+                 eccentricity_option="random",
+                 color_deviation=0.0,
+                 texture=None
+                 ):
+        super(Ellipse, self).__init__(
+            label=label,
+            init_color=init_color,
+            size_option=size_option,
+            position_option=position_option,
+            orientation_option=orientation_option,
+            eccentricity_option=eccentricity_option,
+            color_deviation=color_deviation,
+            texture=texture
+        )
 
     def get_parameters(self):
         x_c, y_c = self.position
@@ -32,6 +41,7 @@ class Ellipse(GeometricShape):
     def draw(self, frame):
         self.new()
         self.eccentricity = self.new_eccentricity()
+        self.orientation = self.new_orientation()
 
         param = self.get_parameters()
         rr, cc = ellipse(r=param[0] * frame.w,
@@ -40,8 +50,7 @@ class Ellipse(GeometricShape):
                          c_radius=param[3] * frame.h,
                          rotation=param[4],
                          shape=[frame.h, frame.w])
-
-        frame.image[rr, cc, :] = self.color
+        self.add_object(frame, rr, cc)
         if self.label_id is not None:
             frame.label[rr, cc, :] = self.label_id
         return frame

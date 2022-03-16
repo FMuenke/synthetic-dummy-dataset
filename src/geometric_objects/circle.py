@@ -4,49 +4,50 @@ from src.geometric_objects.geometric_shape import GeometricShape
 
 
 class Circle(GeometricShape):
-    def __init__(self, cfg):
-        self.color = cfg["color"]
-        self.label_id = cfg["label"]
+    def __init__(self,
+                 label,
+                 init_color,
+                 size_option,
+                 position_option,
+                 color_deviation=0.0,
+                 texture=None
+                 ):
 
-        super(Circle, self).__init__(cfg)
-        self.shape_factor = 0.2
-        self.box = [None, None, None, None]
-
-    def new_shape(self):
-        opt = self.cfg["shape_opt"]
-        x_c, y_c = self.position
-        r = self.size
-        if opt == "random":
-            r += np.random.randint(int(self.shape_factor * 100)) / 100 - 0.5 * self.shape_factor
-        elif opt == "static":
-            pass
-        else:
-            raise ValueError("Shape Option: {} not known.".format(opt))
-
-        x1 = x_c - 0.5 * r
-        y1 = y_c - 0.5 * r
-        x2 = x_c + 0.5 * r
-        y2 = y_c + 0.5 * r
-        self.box = [x1, y1, x2, y2]
+        super(Circle, self).__init__(
+            label=label,
+            init_color=init_color,
+            size_option=size_option,
+            position_option=position_option,
+            color_deviation=color_deviation,
+            texture=texture,
+        )
 
     def draw(self, frame):
-        self.new_position()
-        self.new_shape()
+        self.new()
 
-        img = Image.fromarray(frame.image.astype(np.uint8))
+        img = frame.image.astype(np.uint8)
+        canvas = Image.fromarray(np.zeros(img.shape, dtype=np.uint8))
         lab = Image.fromarray(frame.label.astype(np.uint8))
+
+        x_c, y_c = self.position
+        r = self.size
+        box_rel = [x_c - 0.5 * r, y_c - 0.5 * r, x_c + 0.5 * r, y_c + 0.5 * r]
+
         box = [
-            (self.box[0] * frame.w, self.box[1] * frame.h),
-            (self.box[2] * frame.w, self.box[3] * frame.h)
+            (int(box_rel[0] * frame.w), int(box_rel[1] * frame.h)),
+            (int(box_rel[2] * frame.w), int(box_rel[3] * frame.h))
         ]
-        draw_i = ImageDraw.Draw(img)
+        draw_i = ImageDraw.Draw(canvas)
         draw_i.ellipse(box, fill=self.color)
         del draw_i
 
-        draw_l = ImageDraw.Draw(lab)
-        draw_l.ellipse(box, fill=self.label_id)
-        del draw_l
+        rr, cc = np.where(np.max(np.array(canvas), axis=2) > 0)
+        frame = self.add_object(frame, rr, cc)
 
-        frame.image = np.array(img)
+        if self.label_id is not None:
+            draw_l = ImageDraw.Draw(lab)
+            draw_l.ellipse(box, fill=self.label_id)
+            del draw_l
+
         frame.label = np.array(lab)
         return frame

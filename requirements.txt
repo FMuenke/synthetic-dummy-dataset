@@ -2,3 +2,4 @@ pillow
 tqdm
 numpy
 scikit-image
+opencv-python
