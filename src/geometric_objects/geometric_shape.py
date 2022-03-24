@@ -88,4 +88,8 @@ class GeometricShape(object):
 
     def draw(self, frame):
         print("Not Implemented yet..")
+        
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
