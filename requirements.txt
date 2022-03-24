@@ -1,5 +1,6 @@
 pillow
 tqdm
 numpy
+matplotlib
 scikit-image
 opencv-python
