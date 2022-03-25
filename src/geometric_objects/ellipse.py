@@ -4,6 +4,8 @@ from skimage.draw import ellipse
 
 
 class Ellipse(GeometricShape):
+    desc = "Ellipse"
+
     def __init__(self,
                  label=None,
                  init_color=(0, 200, 0),

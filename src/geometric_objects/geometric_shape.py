@@ -2,6 +2,8 @@ import numpy as np
 
 
 class GeometricShape(object):
+    desc = "GeneralShape"
+
     def __init__(self,
                  label=None,
                  init_color=(0, 200, 0),
@@ -27,6 +29,16 @@ class GeometricShape(object):
         self.orientation = None
         self.eccentricity = None
         self.texture = texture
+
+    def __str__(self):
+        return str(self.to_json())
+
+    def to_json(self):
+        return {
+            "name": self.desc,
+            "color": self.init_color,
+            "color_deviation": self.color_deviation,
+        }
 
     def new(self):
         self.position = self.new_position()

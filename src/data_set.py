@@ -1,5 +1,6 @@
 import os
 from tqdm import tqdm
+from copy import deepcopy
 from src.frame import Frame
 
 from src.background import Background
@@ -21,6 +22,15 @@ class DataSet:
         if "noise_config" not in options:
             options["noise_config"] = {}
         self.noise_config = options["noise_config"]
+
+    def __str__(self):
+        s = deepcopy(self.options)
+        if "objects" in s:
+            s["objects"] = [str(o) for o in self.objects]
+        if "noise_config" in s:
+            if "operations" in s["noise_config"]:
+                s["noise_config"]["operations"] = [str(n) for n in self.noise_config["operations"]]
+        return str(s)
 
     def create(self, data_directory):
         """
@@ -45,7 +55,7 @@ class DataSet:
 
         background = Background(self.background_config)
         noise = Noise(self.noise_config)
-
+        print(str(self))
         print("Creating the DataSet...")
         for i in tqdm(range(self.num_images)):
             frame_id = "frame_{}".format(i)
@@ -57,3 +67,5 @@ class DataSet:
             frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
         print("DataSet was successfully created at {}".format(data_directory))
+        with open(os.path.join(data_directory, "description.txt"), "w") as f:
+            f.write(str(self))
