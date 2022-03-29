@@ -1,6 +1,8 @@
 import os
 from tqdm import tqdm
 from copy import deepcopy
+from src import noise
+from src import geometric_objects
 from src.frame import Frame
 
 from src.background import Background
@@ -13,7 +15,18 @@ class DataSet:
 
         self.num_images = options["n_images"]
 
-        self.objects = options["objects"]
+        self.objects = []
+        for object_dict in options["objects"]:
+            texture_object = object_dict.pop("texture", None)
+            if texture_object:
+                texture_object = getattr(
+                    noise, texture_object["name"]
+                    ).from_config(texture_object)
+            obj = getattr(
+                geometric_objects, object_dict["name"]
+                ).from_config(object_dict)
+            obj.texture = texture_object
+            self.objects.append(obj)
 
         if "background_config" not in options:
             options["background_config"] = {}
@@ -21,7 +34,14 @@ class DataSet:
 
         if "noise_config" not in options:
             options["noise_config"] = {}
+        noise_ops = []
+        if "operations" in options["noise_config"].keys():
+            # iterate over operations and init instances based on configs
+            for noise_dict in options["noise_config"]["operations"]:
+                op = getattr(noise, noise_dict["name"]).from_config(noise_dict)
+                noise_ops.append(op)
         self.noise_config = options["noise_config"]
+        self.noise_config["operations"] = noise_ops
 
     def __str__(self):
         s = deepcopy(self.options)
