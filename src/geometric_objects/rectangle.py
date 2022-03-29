@@ -11,7 +11,8 @@ class Rectangle(GeometricShape):
                  position_option,
                  aspect_ratio_option,
                  color_deviation=0.0,
-                 texture=None
+                 texture=None,
+                 seed=2022
                  ):
 
         super(Rectangle, self).__init__(
@@ -20,7 +21,8 @@ class Rectangle(GeometricShape):
             size_option=size_option,
             position_option=position_option,
             color_deviation=color_deviation,
-            texture=texture
+            texture=texture,
+            seed=seed
         )
         self.aspect_ratio_option = aspect_ratio_option
         self.aspect_ratio = None

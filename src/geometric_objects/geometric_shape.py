@@ -12,7 +12,8 @@ class GeometricShape(object):
                  orientation_option="random",
                  eccentricity_option="random",
                  color_deviation=0.0,
-                 texture=None
+                 texture=None,
+                 seed=2022
                  ):
         self.label_id = label
 
@@ -29,6 +30,7 @@ class GeometricShape(object):
         self.orientation = None
         self.eccentricity = None
         self.texture = texture
+        self.rng = np.random.default_rng(seed)
 
     def __str__(self):
         return str(self.to_json())
@@ -63,9 +65,9 @@ class GeometricShape(object):
     def new_color(self):
         r, g, b = self.init_color
         if self.color_deviation > 0:
-            dr = np.random.randint(255 * self.color_deviation) - 255 * self.color_deviation / 2
-            dg = np.random.randint(255 * self.color_deviation) - 255 * self.color_deviation / 2
-            db = np.random.randint(255 * self.color_deviation) - 255 * self.color_deviation / 2
+            dr = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
+            dg = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
+            db = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
             r = np.clip(r + dr, 0, 255)
             g = np.clip(g + dg, 0, 255)
             b = np.clip(b + db, 0, 255)
@@ -73,10 +75,10 @@ class GeometricShape(object):
 
     def _create_new_parameter(self, opt, current_parameter):
         if type(opt) is list:
-            return np.random.randint(int(opt[0]*100), int(opt[1]*100)) / 100
+            return self.rng.integers(int(opt[0]*100), int(opt[1]*100)) / 100
         else:
             if opt == "random" or (opt == "static" and current_parameter is None):
-                return np.random.randint(100) / 100
+                return self.rng.integers(100) / 100
             elif opt == "static":
                 return current_parameter
             else:

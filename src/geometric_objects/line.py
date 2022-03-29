@@ -12,6 +12,7 @@ class Line(GeometricShape):
                  # position_option,
                  # orientation_option,
                  color_deviation=0.0,
+                 seed=2022
                  ):
 
         super(Line, self).__init__(
@@ -21,6 +22,7 @@ class Line(GeometricShape):
             # position_option=position_option,
             # orientation_option=orientation_option,
             color_deviation=color_deviation,
+            seed=seed
         )
 
     def draw(self, frame):
