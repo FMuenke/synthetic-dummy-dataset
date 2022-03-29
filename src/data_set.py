@@ -4,7 +4,7 @@ from copy import deepcopy
 from src.frame import Frame
 
 from src.background import Background
-from src.noise import Noise
+from src.noise import NoiseGroup
 
 
 class DataSet:
@@ -54,7 +54,7 @@ class DataSet:
             os.mkdir(l_dir)
 
         background = Background(self.background_config)
-        noise = Noise(self.noise_config)
+        noise = NoiseGroup(self.noise_config)
         print(str(self))
         print("Creating the DataSet...")
         for i in tqdm(range(self.num_images)):

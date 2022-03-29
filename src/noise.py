@@ -147,7 +147,7 @@ class SaltNPepper:
         return cls(**config)
 
 
-class Noise:
+class NoiseGroup:
     def __init__(self, config):
         self.mode = config["mode"]
         self.operations = config["operations"]
