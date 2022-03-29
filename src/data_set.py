@@ -1,3 +1,4 @@
+import json
 import os
 from tqdm import tqdm
 from copy import deepcopy
@@ -11,7 +12,7 @@ from src.noise import NoiseGroup
 
 class DataSet:
     def __init__(self, options):
-        self.options = options
+        self.options = deepcopy(options)
 
         self.num_images = options["n_images"]
 
@@ -87,5 +88,6 @@ class DataSet:
             frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
         print("DataSet was successfully created at {}".format(data_directory))
-        with open(os.path.join(data_directory, "description.txt"), "w") as f:
-            f.write(str(self))
+        with open(os.path.join(data_directory, "description.json"), "w") as f:
+            json.dump(self.options, f)
+        

@@ -1,3 +1,4 @@
+import json
 import argparse
 from src.data_set import DataSet
 
@@ -54,6 +55,10 @@ def main(args_):
                 ]
         }
     }
+    
+    if args_.config_file:
+        with open(args_.config_file, "r") as file:
+            cfg = json.load(file)
 
     df = args_.data_set_folder
     data_set = DataSet(cfg)
@@ -67,6 +72,12 @@ def parse_args():
         "-df",
         default="./data/train",
         help="Path to directory with dataset",
+    )
+    parser.add_argument(
+        "--config_file", 
+        "-c",
+        default=None,
+        help="Path to config json file to use for dataset creation"
     )
     return parser.parse_args()
 
