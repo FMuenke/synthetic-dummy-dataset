@@ -4,7 +4,7 @@ import numpy as np
 
 class ChannelShift:
     def __init__(self, intensity, seed=2022):
-        self.name = "channel_shift"
+        self.name = "ChannelShift"
         self.intensity = intensity
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -13,7 +13,7 @@ class ChannelShift:
         return str(self.to_json())
 
     def to_json(self):
-        return {"intensity": self.intensity, "seed": self.seed}
+        return {"name": self.name, "intensity": self.intensity, "seed": self.seed}
 
     def apply(self, img):
         height, width, ch = img.shape
@@ -25,12 +25,13 @@ class ChannelShift:
     
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
 
 class Stripes:
     def __init__(self, horizontal, vertical, space, width, intensity):
-        self.name = "stripes"
+        self.name = "Stripes"
         self.horizontal = horizontal
         self.vertical = vertical
         self.space = space
@@ -42,6 +43,7 @@ class Stripes:
 
     def to_json(self):
         return {
+            "name": self.name,
             "horizontal": self.horizontal,
             "vertical": self.vertical,
             "space": self.space, "width": self.width,
@@ -65,12 +67,13 @@ class Stripes:
     
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
 
 class Blurring:
     def __init__(self, kernel=9, randomness=5, seed=2022):
-        self.name = "blurring"
+        self.name = "Blurring"
         self.kernel = kernel
         self.randomness = randomness
         self.seed = seed
@@ -80,8 +83,8 @@ class Blurring:
         return str(self.to_json())
 
     def to_json(self):
-        return {"kernel": self.kernel, "randomness": self.randomness,
-                "seed": self.seed}
+        return {"name": self.name, "kernel": self.kernel, 
+                "randomness": self.randomness, "seed": self.seed}
 
     def apply(self, img):
         k = self.kernel + self.rng.integers(-self.randomness, self.randomness)
@@ -90,11 +93,13 @@ class Blurring:
     
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
 
 class NeedsMoreJPG:
     def __init__(self, percentage, randomness, seed=2022):
+        self.name = "NeedsMoreJPG"
         self.percentage = percentage
         self.randomness = randomness
         self.seed = seed
@@ -104,8 +109,8 @@ class NeedsMoreJPG:
         return str(self.to_json())
 
     def to_json(self):
-        return {"percentage": self.percentage, "randomness": self.randomness,
-                "seed": self.seed}
+        return {"name": self.name, "percentage": self.percentage, 
+                "randomness": self.randomness, "seed": self.seed}
 
     def apply(self, img):
         h, w = img.shape[:2]
@@ -116,11 +121,13 @@ class NeedsMoreJPG:
     
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
 
 class SaltNPepper:
     def __init__(self, max_delta, grain_size, seed=2022):
+        self.name = "SaltNPepper"
         self.max_delta = max_delta
         self.grain_size = grain_size
         self.seed = seed
@@ -130,8 +137,8 @@ class SaltNPepper:
         return str(self.to_json())
 
     def to_json(self):
-        return {"max_delta": self.max_delta, "grain_size": self.grain_size,
-                "seed": self.seed}
+        return {"name": self.name ,"max_delta": self.max_delta, 
+                "grain_size": self.grain_size, "seed": self.seed}
 
     def apply(self, img):
         h, w, c = img.shape
@@ -144,6 +151,7 @@ class SaltNPepper:
     
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
 
