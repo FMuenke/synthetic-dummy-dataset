@@ -5,6 +5,8 @@ from src.geometric_objects.geometric_shape import GeometricShape
 
 
 class Line(GeometricShape):
+    desc = "Line"
+    
     def __init__(self,
                  label,
                  init_color,

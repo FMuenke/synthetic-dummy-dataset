@@ -2,7 +2,7 @@ import numpy as np
 
 
 class GeometricShape(object):
-    desc = "GeneralShape"
+    desc = "GeometricShape"
 
     def __init__(self,
                  label=None,
@@ -105,5 +105,6 @@ class GeometricShape(object):
         
     @classmethod
     def from_config(cls, config):
+        _ = config.pop("name", None) # remove name from config in case key is present
         return cls(**config)
 
