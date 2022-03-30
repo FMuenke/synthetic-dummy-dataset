@@ -5,6 +5,8 @@ from src.geometric_objects.geometric_shape import GeometricShape
 
 
 class Line(GeometricShape):
+    desc = "Line"
+    
     def __init__(self,
                  label,
                  init_color,
@@ -12,6 +14,7 @@ class Line(GeometricShape):
                  # position_option,
                  # orientation_option,
                  color_deviation=0.0,
+                 seed=2022
                  ):
 
         super(Line, self).__init__(
@@ -21,6 +24,7 @@ class Line(GeometricShape):
             # position_option=position_option,
             # orientation_option=orientation_option,
             color_deviation=color_deviation,
+            seed=seed
         )
 
     def draw(self, frame):

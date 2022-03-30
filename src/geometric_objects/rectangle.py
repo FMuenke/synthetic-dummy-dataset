@@ -4,6 +4,8 @@ from src.geometric_objects.geometric_shape import GeometricShape
 
 
 class Rectangle(GeometricShape):
+    desc = "Rectangle"
+    
     def __init__(self,
                  label,
                  init_color,
@@ -11,7 +13,8 @@ class Rectangle(GeometricShape):
                  position_option,
                  aspect_ratio_option,
                  color_deviation=0.0,
-                 texture=None
+                 texture=None,
+                 seed=2022
                  ):
 
         super(Rectangle, self).__init__(
@@ -20,11 +23,13 @@ class Rectangle(GeometricShape):
             size_option=size_option,
             position_option=position_option,
             color_deviation=color_deviation,
-            texture=texture
+            texture=texture,
+            seed=seed
         )
         self.aspect_ratio_option = aspect_ratio_option
         self.aspect_ratio = None
         self.aspect_ratio = self.new_aspect_ratio()
+        self.desc = 'Rectangle'
 
     def new_aspect_ratio(self):
         opt = self.aspect_ratio_option
