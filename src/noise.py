@@ -59,6 +59,7 @@ class Stripes:
 
 class Blurring:
     def __init__(self, kernel=9, randomness=5):
+        assert 0 < randomness < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(randomness, kernel)
         self.kernel = kernel
         self.randomness = randomness
 

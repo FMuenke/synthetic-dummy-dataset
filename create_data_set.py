@@ -1,7 +1,7 @@
 import argparse
 from src.data_set import DataSet
 from src import noise
-from src.geometric_objects import Ellipse, Circle, Rectangle
+from src.geometric_objects import Ellipse, Rectangle
 
 
 def main(args_):
@@ -39,9 +39,9 @@ def main(args_):
         "noise_config": {
             "mode": "random",
             "operations": [
-                # noise.Blurring(13, randomness=11),
-                # noise.SaltNPepper(20, 8),
-                noise.ChannelShift(0.5)
+                noise.Blurring(33, randomness=27),
+                # noise.SaltNPepper(76, 8),
+                # noise.ChannelShift(0.125),
                 # noise.NeedsMoreJPG(50, 10),
             ]
         }

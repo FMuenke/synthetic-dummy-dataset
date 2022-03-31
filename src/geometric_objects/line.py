@@ -1,4 +1,4 @@
-from PIL import ImageDraw, Image
+from PIL import Image
 import numpy as np
 import cv2
 from src.geometric_objects.geometric_shape import GeometricShape
