@@ -1,19 +1,33 @@
+import json
 import os
 from tqdm import tqdm
 from copy import deepcopy
+from src import noise
+from src import geometric_objects
 from src.frame import Frame
 
 from src.background import Background
-from src.noise import Noise
+from src.noise import NoiseGroup
 
 
 class DataSet:
     def __init__(self, options):
-        self.options = options
+        self.options = deepcopy(options)
 
         self.num_images = options["n_images"]
 
-        self.objects = options["objects"]
+        self.objects = []
+        for object_dict in options["objects"]:
+            texture_object = object_dict.pop("texture", None)
+            if texture_object:
+                texture_object = getattr(
+                    noise, texture_object["name"]
+                    ).from_config(texture_object)
+            obj = getattr(
+                geometric_objects, object_dict["name"]
+                ).from_config(object_dict)
+            obj.texture = texture_object
+            self.objects.append(obj)
 
         if "background_config" not in options:
             options["background_config"] = {}
@@ -21,7 +35,14 @@ class DataSet:
 
         if "noise_config" not in options:
             options["noise_config"] = {}
+        noise_ops = []
+        if "operations" in options["noise_config"].keys():
+            # iterate over operations and init instances based on configs
+            for noise_dict in options["noise_config"]["operations"]:
+                op = getattr(noise, noise_dict["name"]).from_config(noise_dict)
+                noise_ops.append(op)
         self.noise_config = options["noise_config"]
+        self.noise_config["operations"] = noise_ops
 
     def __str__(self):
         s = deepcopy(self.options)
@@ -54,7 +75,7 @@ class DataSet:
             os.mkdir(l_dir)
 
         background = Background(self.background_config)
-        noise = Noise(self.noise_config)
+        noise = NoiseGroup(self.noise_config)
         print(str(self))
         print("Creating the DataSet...")
         for i in tqdm(range(self.num_images)):
@@ -67,5 +88,6 @@ class DataSet:
             frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
         print("DataSet was successfully created at {}".format(data_directory))
-        with open(os.path.join(data_directory, "description.txt"), "w") as f:
-            f.write(str(self))
+        with open(os.path.join(data_directory, "description.json"), "w") as f:
+            json.dump(self.options, f)
+        

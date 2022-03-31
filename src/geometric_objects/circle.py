@@ -4,13 +4,16 @@ from src.geometric_objects.geometric_shape import GeometricShape
 
 
 class Circle(GeometricShape):
+    desc = "Circle"
+    
     def __init__(self,
                  label,
                  init_color,
                  size_option,
                  position_option,
                  color_deviation=0.0,
-                 texture=None
+                 texture=None,
+                 seed=2022
                  ):
 
         super(Circle, self).__init__(
@@ -20,6 +23,7 @@ class Circle(GeometricShape):
             position_option=position_option,
             color_deviation=color_deviation,
             texture=texture,
+            seed=seed
         )
 
     def draw(self, frame):

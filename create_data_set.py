@@ -1,3 +1,4 @@
+import json
 import argparse
 from src.data_set import DataSet
 from src import noise
@@ -5,31 +6,26 @@ from src.geometric_objects import Ellipse, Rectangle
 
 
 def main(args_):
-    r = Rectangle(
-        label=(255, 255, 255),
-        init_color=(0, 200, 0),
-        position_option=[0.2, 0.8],
-        aspect_ratio_option=[0.1, 0.8],
-        size_option=[0.25, 0.60],
-        color_deviation=0.2,
-        texture=noise.SaltNPepper(20, 10),
-    )
-    e = Ellipse(
-        label=(255, 255, 255),
-        init_color=(0, 150, 0),
-        position_option=[0.2, 0.8],
-        size_option=[0.1, 0.40],
-        orientation_option="random",
-        eccentricity_option=[0.1, 0.9],
-        color_deviation=0.3,
-        texture=noise.SaltNPepper(50, 4)
-    )
 
     cfg = {
         "n_images": 100,
         "image_width": 400,
         "image_height": 400,
-        "objects": [e],
+        "objects": [{
+            "name": "Ellipse",
+            "label": (255, 255, 255),
+            "init_color": (0, 150, 0),
+            "position_option": [0.2, 0.8],
+            "size_option": [0.1, 0.40],
+            "orientation_option": "random",
+            "eccentricity_option": [0.1, 0.9],
+            "color_deviation": 0.3,
+            "texture": {
+                "name": "SaltNPepper",
+                "max_delta": 50,
+                "grain_size": 4
+                }
+            }],
         "background_config": {
             "mode": "random_gaussian",
             "color": [(150, 25, 150), (150, 25, 25), (25, 150, 150)],
@@ -39,13 +35,27 @@ def main(args_):
         "noise_config": {
             "mode": "random",
             "operations": [
-                noise.Blurring(33, randomness=27),
-                # noise.SaltNPepper(76, 8),
-                # noise.ChannelShift(0.125),
-                # noise.NeedsMoreJPG(50, 10),
+                {
+                    "name": "Blurring",
+                    "kernel": 13,
+                    "randomness": 11
+                    },
+                {
+                    "name": "SaltNPepper",
+                    "max_delta": 20,
+                    "grain_size": 8
+                    },
+                {
+                    "name": "ChannelShift",
+                    "intensity": 0.1
+                },
             ]
-        }
-    }
+        },
+    },
+    
+    if args_.config_file:
+        with open(args_.config_file, "r") as file:
+            cfg = json.load(file)
 
     df = args_.data_set_folder
     data_set = DataSet(cfg)
@@ -59,6 +69,12 @@ def parse_args():
         "-df",
         default="./data/train",
         help="Path to directory with dataset",
+    )
+    parser.add_argument(
+        "--config_file", 
+        "-c",
+        default=None,
+        help="Path to config json file to use for dataset creation"
     )
     return parser.parse_args()
 

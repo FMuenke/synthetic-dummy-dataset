@@ -14,7 +14,8 @@ class Ellipse(GeometricShape):
                  orientation_option="random",
                  eccentricity_option="random",
                  color_deviation=0.0,
-                 texture=None
+                 texture=None,
+                 seed=2022
                  ):
         super(Ellipse, self).__init__(
             label=label,
@@ -24,7 +25,8 @@ class Ellipse(GeometricShape):
             orientation_option=orientation_option,
             eccentricity_option=eccentricity_option,
             color_deviation=color_deviation,
-            texture=texture
+            texture=texture,
+            seed=seed
         )
 
     def get_parameters(self):
