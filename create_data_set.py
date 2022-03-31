@@ -1,8 +1,6 @@
 import json
 import argparse
 from src.data_set import DataSet
-from src import noise
-from src.geometric_objects import Ellipse, Rectangle
 
 
 def main(args_):

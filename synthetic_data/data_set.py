@@ -2,12 +2,12 @@ import json
 import os
 from tqdm import tqdm
 from copy import deepcopy
-from src import noise
+from synthetic_data import noise
 from src import geometric_objects
-from src.frame import Frame
+from synthetic_data.frame import Frame
 
-from src.background import Background
-from src.noise import NoiseGroup
+from synthetic_data.background import Background
+from synthetic_data.noise import NoiseGroup
 
 
 class DataSet:
