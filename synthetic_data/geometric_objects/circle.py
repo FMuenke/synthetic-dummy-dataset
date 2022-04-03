@@ -1,6 +1,6 @@
 from PIL import ImageDraw, Image
 import numpy as np
-from src.geometric_objects.geometric_shape import GeometricShape
+from synthetic_data.geometric_objects.geometric_shape import GeometricShape
 
 
 class Circle(GeometricShape):

@@ -65,9 +65,9 @@ class GeometricShape(object):
     def new_color(self):
         r, g, b = self.init_color
         if self.color_deviation > 0:
-            dr = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
-            dg = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
-            db = self.rng.integers(255 * self.color_deviation) - 255 * self.color_deviation / 2
+            dr = self.rng.integers(self.color_deviation) * self.rng.choice([1, -1])
+            dg = self.rng.integers(self.color_deviation) * self.rng.choice([1, -1])
+            db = self.rng.integers(self.color_deviation) * self.rng.choice([1, -1])
             r = np.clip(r + dr, 0, 255)
             g = np.clip(g + dg, 0, 255)
             b = np.clip(b + db, 0, 255)

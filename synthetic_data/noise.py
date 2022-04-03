@@ -5,6 +5,7 @@ import numpy as np
 class ChannelShift:
     def __init__(self, intensity, seed=2022):
         self.name = "ChannelShift"
+        assert 1 < intensity < 255, "Set the pixel values to be shifted (1, 255)"
         self.intensity = intensity
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -19,7 +20,7 @@ class ChannelShift:
         height, width, ch = img.shape
         img = img.astype(np.float32)
         for i in range(ch):
-            img[:, :, i] += self.rng.integers(255) * self.intensity * self.rng.choice([1, -1])
+            img[:, :, i] += self.rng.integers(self.intensity) * self.rng.choice([1, -1])
         img = np.clip(img, 0, 255)
         return img.astype(np.uint8)
     
@@ -72,11 +73,12 @@ class Stripes:
 
 
 class Blurring:
-
-    def __init__(self, kernel=9, randomness=5, seed=2022):
+    def __init__(self, kernel=9, randomness=-1, seed=2022):
         self.name = "Blurring"
         assert 0 < randomness < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(randomness, kernel)
         self.kernel = kernel
+        if randomness == -1:
+            randomness = kernel - 2
         self.randomness = randomness
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -139,7 +141,7 @@ class SaltNPepper:
         return str(self.to_json())
 
     def to_json(self):
-        return {"name": self.name ,"max_delta": self.max_delta, 
+        return {"name": self.name, "max_delta": self.max_delta,
                 "grain_size": self.grain_size, "seed": self.seed}
 
     def apply(self, img):

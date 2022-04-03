@@ -1,5 +1,5 @@
 import numpy as np
-from src.geometric_objects.geometric_shape import GeometricShape
+from synthetic_data.geometric_objects.geometric_shape import GeometricShape
 
 
 class Rectangle(GeometricShape):

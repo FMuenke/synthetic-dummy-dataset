@@ -1,6 +1,6 @@
 import json
 import argparse
-from src.data_set import DataSet
+from synthetic_data.data_set import DataSet
 
 
 def main(args_):

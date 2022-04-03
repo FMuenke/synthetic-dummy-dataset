@@ -1,9 +1,10 @@
 import json
 import os
+from copy import copy
 from tqdm import tqdm
 from copy import deepcopy
 from synthetic_data import noise
-from src import geometric_objects
+from synthetic_data import geometric_objects
 from synthetic_data.frame import Frame
 
 from synthetic_data.background import Background
@@ -75,19 +76,19 @@ class DataSet:
             os.mkdir(l_dir)
 
         background = Background(self.background_config)
-        noise = NoiseGroup(self.noise_config)
+        noise_grp = NoiseGroup(self.noise_config)
         print(str(self))
         print("Creating the DataSet...")
         for i in tqdm(range(self.num_images)):
             frame_id = "frame_{}".format(i)
-            frame = Frame(self.options)
+            frame = Frame(height=copy(self.options["image_height"]), width=copy(self.options["image_width"]))
             frame = background.draw(frame)
             for o in self.objects:
                 frame = o.draw(frame)
-            frame = noise.draw(frame)
+            frame = noise_grp.draw(frame)
             frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
         print("DataSet was successfully created at {}".format(data_directory))
         with open(os.path.join(data_directory, "description.json"), "w") as f:
             json.dump(self.options, f)
-        
+
