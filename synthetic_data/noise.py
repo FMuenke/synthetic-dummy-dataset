@@ -75,10 +75,10 @@ class Stripes:
 class Blurring:
     def __init__(self, kernel=9, randomness=-1, seed=2022):
         self.name = "Blurring"
-        assert 0 < randomness < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(randomness, kernel)
-        self.kernel = kernel
         if randomness == -1:
             randomness = kernel - 2
+        assert 0 < randomness < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(randomness, kernel)
+        self.kernel = kernel
         self.randomness = randomness
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -168,5 +168,6 @@ class NoiseGroup:
         img = np.array(frame.image, np.uint8)
         for op in self.operations:
             img = op.apply(img)
+            # cv2.imwrite("./noise_{}.png".format(op.name), img)
         frame.image = img
         return frame

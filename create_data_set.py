@@ -1,12 +1,15 @@
 import json
+import os
 import argparse
 from synthetic_data.data_set import DataSet
 
 
 def main(args_):
 
+    factor = 0.2
+
     cfg = {
-        "n_images": 100,
+        "n_images": 1,
         "image_width": 400,
         "image_height": 400,
         "objects": [{
@@ -17,10 +20,10 @@ def main(args_):
             "size_option": [0.1, 0.40],
             "orientation_option": "random",
             "eccentricity_option": [0.1, 0.9],
-            "color_deviation": 0.3,
+            "color_deviation": 16,
             "texture": {
                 "name": "SaltNPepper",
-                "max_delta": 50,
+                "max_delta": 40,
                 "grain_size": 4
                 }
             }],
@@ -28,28 +31,17 @@ def main(args_):
             "mode": "random_gaussian",
             "color": [(150, 25, 150), (150, 25, 25), (25, 150, 150)],
             "number_of_objects": [50, 200],
-            "size": [0.01, 0.2]
+            "size": [10, 30]
         },
         "noise_config": {
             "mode": "random",
             "operations": [
-                {
-                    "name": "Blurring",
-                    "kernel": 13,
-                    "randomness": 11
-                    },
-                {
-                    "name": "SaltNPepper",
-                    "max_delta": 20,
-                    "grain_size": 8
-                    },
-                {
-                    "name": "ChannelShift",
-                    "intensity": 0.1
-                },
+                {"name": "Blurring", "kernel": int(400 * factor)},
+                {"name": "SaltNPepper", "max_delta": int(254 * factor), "grain_size": 8},
+                {"name": "ChannelShift", "intensity": int(254 * factor)},
             ]
         },
-    },
+    }
     
     if args_.config_file:
         with open(args_.config_file, "r") as file:
@@ -57,7 +49,10 @@ def main(args_):
 
     df = args_.data_set_folder
     data_set = DataSet(cfg)
-    data_set.create(df)
+    if not os.path.isdir(df):
+        os.mkdir(df)
+    data_set.create(os.path.join(df, "train"))
+    data_set.create(os.path.join(df, "test"))
 
 
 def parse_args():

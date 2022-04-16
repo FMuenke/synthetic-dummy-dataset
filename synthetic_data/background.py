@@ -1,6 +1,6 @@
 import numpy as np
-from src.geometric_objects import Circle, Rectangle, Ellipse, Line
-from src.patterns.gaussian_blobs import GaussianBlobs
+from synthetic_data.geometric_objects import Circle, Rectangle, Ellipse, Line
+from synthetic_data.patterns.gaussian_blobs import GaussianBlobs
 
 
 def pick_color(color):
@@ -81,7 +81,7 @@ class Background:
         elif self.mode == "random_gaussian":
             g_blobs = GaussianBlobs(
                 np.random.randint(self.number_of_objects[0], self.number_of_objects[1]),
-                size_range=[10, 30],
+                size_range=self.size,
                 color=pick_color(self.color)
             )
             frame = g_blobs.draw(frame)

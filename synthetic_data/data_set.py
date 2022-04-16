@@ -1,5 +1,6 @@
 import json
 import os
+import cv2
 from copy import copy
 from tqdm import tqdm
 from copy import deepcopy
@@ -82,9 +83,12 @@ class DataSet:
         for i in tqdm(range(self.num_images)):
             frame_id = "frame_{}".format(i)
             frame = Frame(height=copy(self.options["image_height"]), width=copy(self.options["image_width"]))
+            # cv2.imwrite("./blank.png", frame.image)
             frame = background.draw(frame)
+            # cv2.imwrite("./background.png", frame.image)
             for o in self.objects:
                 frame = o.draw(frame)
+            # cv2.imwrite("./objects.png", frame.image)
             frame = noise_grp.draw(frame)
             frame.write(os.path.join(i_dir, frame_id + ".png"),
                         os.path.join(l_dir, frame_id + ".png"))
