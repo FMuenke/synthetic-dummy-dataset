@@ -1,10 +1,9 @@
-import json
 import os
 import argparse
 from synthetic_data.data_set import DataSet
 
 
-def main(args_):
+def create_ds(df, factor):
     cfg = {
         "n_images": 512,
         "image_width": 400,
@@ -23,8 +22,8 @@ def main(args_):
                 "max_delta": 40,
                 "min_delta": 40,
                 "grain_size": 4
-                }
-            }],
+            }
+        }],
         "background_config": {
             "mode": "random_gaussian",
             "color": [(150, 25, 150), (150, 25, 25), (25, 150, 150)],
@@ -34,23 +33,26 @@ def main(args_):
         "noise_config": {
             "mode": "random",
             "operations": [
-                # {"name": "Blurring", "kernel": int(400 * factor)},
-                # {"name": "SaltNPepper", "max_delta": int(254 * factor), "grain_size": 8},
-                # {"name": "ChannelShift", "intensity": int(254 * factor)},
+                {"name": "Blurring", "kernel": int(400 * factor)},
+                {"name": "SaltNPepper", "max_delta": int(255 * factor), "grain_size": 8},
+                {"name": "ChannelShift", "intensity": int(255 * factor)},
             ]
         },
     }
-    
-    if args_.config_file:
-        with open(args_.config_file, "r") as file:
-            cfg = json.load(file)
 
-    df = args_.data_set_folder
     data_set = DataSet(cfg)
     if not os.path.isdir(df):
         os.mkdir(df)
     data_set.create(os.path.join(df, "train"))
     data_set.create(os.path.join(df, "test"))
+
+
+def main(args_):
+    base_dir = args_.data_set_folder
+    for f in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100]:
+        data_set_folder = os.path.join(base_dir, "synth_A{:03d}".format(f))
+        print(data_set_folder)
+        create_ds(data_set_folder, f/100)
 
 
 def parse_args():
@@ -60,12 +62,6 @@ def parse_args():
         "-df",
         default="./data/train",
         help="Path to directory with dataset",
-    )
-    parser.add_argument(
-        "--config_file", 
-        "-c",
-        default=None,
-        help="Path to config json file to use for dataset creation"
     )
     return parser.parse_args()
 

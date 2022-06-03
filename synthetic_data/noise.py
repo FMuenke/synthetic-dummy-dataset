@@ -5,7 +5,7 @@ import numpy as np
 class ChannelShift:
     def __init__(self, intensity, seed=2022):
         self.name = "ChannelShift"
-        assert 1 < intensity < 255, "Set the pixel values to be shifted (1, 255)"
+        assert 0 <= intensity <= 255, "Set the pixel values to be shifted (1, 255)"
         self.intensity = intensity
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -26,7 +26,7 @@ class ChannelShift:
     
     @classmethod
     def from_config(cls, config):
-        _ = config.pop("name", None) # remove name from config in case key is present
+        _ = config.pop("name", None)  # remove name from config in case key is present
         return cls(**config)
 
 
@@ -68,18 +68,16 @@ class Stripes:
     
     @classmethod
     def from_config(cls, config):
-        _ = config.pop("name", None) # remove name from config in case key is present
+        _ = config.pop("name", None)  # remove name from config in case key is present
         return cls(**config)
 
 
 class Blurring:
-    def __init__(self, kernel=9, randomness=-1, seed=2022):
+    def __init__(self, kernel=9, min_kernel=0, seed=2022):
         self.name = "Blurring"
-        if randomness == -1:
-            randomness = kernel - 2
-        assert 0 < randomness < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(randomness, kernel)
+        assert 0 <= min_kernel < kernel, "REQUIREMENT: 0 < randomness ({}) < kernel({})".format(min_kernel, kernel)
         self.kernel = kernel
-        self.randomness = randomness
+        self.min_kernel = min_kernel
         self.seed = seed
         self.rng = np.random.default_rng(seed)
 
@@ -88,16 +86,18 @@ class Blurring:
 
     def to_json(self):
         return {"name": self.name, "kernel": self.kernel, 
-                "randomness": self.randomness, "seed": self.seed}
+                "min_kernel": self.min_kernel, "seed": self.seed}
 
     def apply(self, img):
-        k = self.kernel + self.rng.integers(-self.randomness, self.randomness)
+        k = self.rng.integers(self.min_kernel, self.kernel)
+        if k == 0:
+            return img
         img = cv2.blur(img.astype(np.float32), ksize=(k, k))
         return img.astype(np.uint8)
     
     @classmethod
     def from_config(cls, config):
-        _ = config.pop("name", None) # remove name from config in case key is present
+        _ = config.pop("name", None)  # remove name from config in case key is present
         return cls(**config)
 
 
@@ -130,9 +130,10 @@ class NeedsMoreJPG:
 
 
 class SaltNPepper:
-    def __init__(self, max_delta, grain_size, seed=2022):
+    def __init__(self, max_delta, grain_size, min_delta=0, seed=2022):
         self.name = "SaltNPepper"
         self.max_delta = max_delta
+        self.min_delta = min_delta
         self.grain_size = grain_size
         self.seed = seed
         self.rng = np.random.default_rng(seed)
@@ -148,7 +149,13 @@ class SaltNPepper:
         h, w, c = img.shape
         snp_h = int(h / self.grain_size)
         snp_w = int(w / self.grain_size)
-        snp = self.rng.integers(-self.max_delta, self.max_delta, size=[snp_h, snp_w, c])
+        if self.min_delta == self.max_delta:
+            max_delta = self.max_delta
+        else:
+            max_delta = self.rng.integers(self.min_delta, self.max_delta)
+        if max_delta == 0:
+            return img
+        snp = self.rng.integers(-max_delta, max_delta, size=[snp_h, snp_w, c])
         snp = cv2.resize(snp, (w, h), interpolation=cv2.INTER_NEAREST)
         img = img.astype(np.int) + snp
         return np.clip(img, 0, 255).astype(np.uint8)
