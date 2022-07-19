@@ -33,9 +33,9 @@ def create_ds(df, factor):
         "noise_config": {
             "mode": "random",
             "operations": [
-                {"name": "Blurring", "kernel": int(400 * factor)},
+                # {"name": "Blurring", "kernel": int(400 * factor)},
                 {"name": "SaltNPepper", "max_delta": int(255 * factor), "grain_size": 8},
-                {"name": "ChannelShift", "intensity": int(255 * factor)},
+                # {"name": "ChannelShift", "intensity": int(255 * factor)},
             ]
         },
     }
@@ -49,8 +49,10 @@ def create_ds(df, factor):
 
 def main(args_):
     base_dir = args_.data_set_folder
+    if not os.path.isdir(base_dir):
+        os.mkdir(base_dir)
     for f in [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100]:
-        data_set_folder = os.path.join(base_dir, "synth_A{:03d}".format(f))
+        data_set_folder = os.path.join(base_dir, "synth_D{:03d}".format(f))
         print(data_set_folder)
         create_ds(data_set_folder, f/100)
 
