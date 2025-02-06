@@ -157,7 +157,7 @@ class SaltNPepper:
             return img
         snp = self.rng.integers(-max_delta, max_delta, size=[snp_h, snp_w, c])
         snp = cv2.resize(snp, (w, h), interpolation=cv2.INTER_NEAREST)
-        img = img.astype(np.int) + snp
+        img = img.astype(np.int32) + snp
         return np.clip(img, 0, 255).astype(np.uint8)
     
     @classmethod
